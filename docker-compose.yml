@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  nginx:
+    container_name: koodaamo-news-nginx
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./public:/var/www/html
+      - vods:/vods:ro
+    networks:
+      - koodaamo-news-network
+    restart: unless-stopped
+
+  cron:
+    container_name: koodaamo-news-cron
+    build: .
+    volumes:
+      - vods:/vods
+    environment:
+      - HOSTNAME=${HOSTNAME}
+    stop_grace_period: 0s
+    restart: unless-stopped
+
+  cloudflared:
+    container_name: koodaamo-news-cloudflared-tunnel
+    image: cloudflare/cloudflared
+    restart: unless-stopped
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARED_TUNNEL_TOKEN}
+    networks:
+      - koodaamo-news-network
+    depends_on:
+      - nginx
+    healthcheck:
+      test: ['CMD', 'cloudflared', 'tunnel', 'status']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    command: tunnel run
+
+networks:
+  koodaamo-news-network:
+
+volumes:
+  vods:

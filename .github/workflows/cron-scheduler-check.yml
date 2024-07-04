@@ -1,0 +1,33 @@
+name: Check that the cron scheduler script works as expected
+
+on:
+  push:
+    paths:
+      - cron-scheduler.py
+  pull_request:
+    paths:
+      - cron-scheduler.py
+  schedule:
+    - cron: 0 * * * *
+
+jobs:
+  cron-scheduler-check:
+    runs-on: ubuntu-latest
+
+    env:
+      TZ: Europe/Helsinki
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+          
+      - name: Run the cron scheduler script
+        run: python cron-scheduler.py
+
+      - name: Check if /tmp/cronjobs exists
+        run: cat /tmp/cronjobs
+
+      - name: Check if /tmp/schedule.json exists
+        run: cat /tmp/schedule.json
