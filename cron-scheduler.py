@@ -68,9 +68,9 @@ def mtv3_news() -> List[Tuple[str, datetime, datetime]]:
             continue
         elif program["program_type"] != "uutiset":
             continue
-        elif "Uutiset" not in program["name"]:
+        elif "uutiset" not in program["name"].lower():
             continue
-        elif "Live" in program["name"]:
+        elif "live" in program["name"].lower():
             continue
         news_programs.append(program)
 
