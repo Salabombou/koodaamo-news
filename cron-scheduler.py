@@ -31,7 +31,11 @@ def yle_news() -> List[Tuple[str, datetime, datetime]]:
 
     programs = json.loads(response.read())["data"]
 
-    news_program_uris = ["yleareena://items/1-3235352", "yleareena://items/1-50865561"]
+    news_program_uris = [
+        "yleareena://items/1-3235352",
+        "yleareena://items/1-50865561",
+        "yleareena://items/1-72847819",
+    ]
     news_programs = []
     for program in programs:
         program_series_uri = None
